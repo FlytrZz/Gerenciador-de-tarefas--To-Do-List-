@@ -18,6 +18,8 @@ import java.io.FileWriter;
 import java.util.LinkedList;
 import java.util.List;
 import java.awt.event.ActionEvent;
+import javax.swing.RowFilter;
+import javax.swing.table.TableRowSorter;
 
 public class Tela {
 
@@ -129,28 +131,7 @@ public class Tela {
                 btnAplicarAtualizacoes
         );
 
-        // ================= FILTRO =================
-
-        txtFiltro = new JTextField();
-        txtFiltro.setBounds(10, 45, 642, 23);
-        frameTela.getContentPane().add(txtFiltro);
-        txtFiltro.setColumns(10);
-
-        JButton btnAplicarFiltros =
-                new JButton("Aplicar Filtros");
-
-        btnAplicarFiltros.setBounds(
-                662,
-                45,
-                161,
-                23
-        );
-
-        frameTela.getContentPane().add(
-                btnAplicarFiltros
-        );
-
-        // ================= TABELA =================
+     // ================= TABELA =================
 
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setBounds(10, 79, 813, 171);
@@ -169,8 +150,54 @@ public class Tela {
         modelo.addColumn("Usuário");
 
         table.setModel(modelo);
+        TableRowSorter<DefaultTableModel> sorter =
+                new TableRowSorter<>(modelo);
+
+        table.setRowSorter(sorter);
 
         scrollPane.setViewportView(table);
+        
+        // ================= FILTRO =================
+
+        txtFiltro = new JTextField();
+        txtFiltro.setBounds(10, 45, 642, 23);
+        frameTela.getContentPane().add(txtFiltro);
+        txtFiltro.setColumns(10);
+
+        JButton btnAplicarFiltros =
+                new JButton("Aplicar Filtros");
+        btnAplicarFiltros.addActionListener(new ActionListener() {
+
+        	    public void actionPerformed(ActionEvent e) {
+
+        	        String texto =
+        	                txtFiltro.getText();
+
+        	        if (texto.trim().isEmpty()) {
+
+        	            sorter.setRowFilter(null);
+
+        	        } else {
+
+        	        	sorter.setRowFilter(
+        	        	        RowFilter.regexFilter(
+        	        	                "(?i)" + texto
+        	        	        )
+        	        	);
+        	        }
+        	    }
+        	});
+
+        btnAplicarFiltros.setBounds(
+                662,
+                45,
+                161,
+                23
+        );
+
+        frameTela.getContentPane().add(
+                btnAplicarFiltros
+        );
 
         // ================= CARREGAR DADOS =================
 
